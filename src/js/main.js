@@ -1,59 +1,56 @@
+const radTabsElementClassName = '.js-rad-tabs-element';
+const radDropdownElementClassName = '.js-rad-dropdown-element';
+const radContentElementClassName = '.js-rad-content-element';
+
 export const DiscourseRADParser = () => {
-  const radTabsElements = document.querySelectorAll('.rad-tabs-element');
+  const radTabsElements = document.querySelectorAll(`${radTabsElementClassName}`);
 
   radTabsElements.forEach((radTabsElement) => {
-    setDefaults(radTabsElement);
-    setupDropdowns(radTabsElement);
+    const radDropdownElements = radTabsElement.querySelectorAll(`${radDropdownElementClassName}`);
+
+    setDefaults(radDropdownElements);
+    setupDropdowns(radDropdownElements);
   });
 
   toggleElements();
 }
 
-const setDefaults = radTabsElement => {
-  const dropdowns = radTabsElement.querySelectorAll('select');
+const setDefaults = radDropdownElements => {
+  radDropdownElements.forEach(radDropdownElement => {
+    const name = radDropdownElement.name;
+    const radDropdownElementOptions = radDropdownElement.querySelectorAll('option');
 
-  dropdowns.forEach((dropdown) => {
-    const name = dropdown.name;
-
-    const options = dropdown.querySelectorAll('option');
     let defaultWasSet = false;
-    options.forEach((option) => {
-      if (localStorage.getItem(name) === option.value) {
+    radDropdownElementOptions.forEach(radDropdownElementOption => {
+      if (localStorage.getItem(name) === radDropdownElementOption.value) {
         defaultWasSet = true;
-        option.setAttribute('selected', 'selected');
+        radDropdownElementOption.setAttribute('selected', 'selected');
       }
     });
 
-    if (!defaultWasSet) {
-      const firstOption = dropdown.firstElementChild;
-      firstOption.setAttribute('selected', 'selected');
-
-      if (localStorage.getItem(name) === null) {
-        localStorage.setItem(name, firstOption.value);
-      }
+    if (!defaultWasSet && localStorage.getItem(name) === null) {
+      localStorage.setItem(name, radDropdownElement.firstElementChild.value);
     }
   });
 }
 
-const setupDropdowns = radTabsElement => {
-  const dropdowns = radTabsElement.querySelectorAll('select');
-
-  dropdowns.forEach(function (dropdown) {
-    attachDropdownEvents(dropdown);
+const setupDropdowns = radDropdownElements => {
+  radDropdownElements.forEach(radDropdownElement => {
+    attachDropdownEvents(radDropdownElement);
   });
 }
 
-const attachDropdownEvents = dropdown => {
-  dropdown.addEventListener('change', function (e) {
+const attachDropdownEvents = (radDropdownElement) => {
+  radDropdownElement.addEventListener('change', e => {
     const newValue = e.target.value;
-    const dropdownName = dropdown.name;
+    const dropdownName = radDropdownElement.name;
 
     localStorage.setItem(dropdownName, newValue);
 
-    const dropdowns = document.querySelectorAll(`select[name=${dropdownName}][class*=rad-dropdown-element]`);
-    dropdowns.forEach(function (element) {
-      if (element.innerHTML.indexOf('value="' + newValue + '"') > -1) {
-        element.value = newValue;
+    const allRadDropdownElements = document.querySelectorAll(`${radDropdownElementClassName}`);
+    allRadDropdownElements.forEach(dropdown => {
+      if (dropdown.name === dropdownName && dropdown.innerHTML.indexOf('value="' + newValue + '"') > -1) {
+        dropdown.value = newValue;
       }
     });
 
@@ -62,20 +59,22 @@ const attachDropdownEvents = dropdown => {
 }
 
 const toggleElements = () => {
-  const elements = document.querySelectorAll('.rad-content-element');
+  const radContentElements = document.querySelectorAll(`${radContentElementClassName}`);
 
-  elements.forEach(function (element) {
-    for (const criteriaName in element.dataset) {
+  radContentElements.forEach(radContentElement => {
+    for (const criteriaName in radContentElement.dataset) {
       const criteriaValue = localStorage.getItem(criteriaName);
+      const criteriaValuesList = radContentElement.dataset[criteriaName].split(',');
 
-      if (!element.dataset[criteriaName].split(',').includes(criteriaValue)) {
-        element.classList.add('u-hide');
-        element.setAttribute('aria-hidden', true);
+      if (!criteriaValuesList.includes(criteriaValue)) {
+        radContentElement.classList.add('u-hide');
+        radContentElement.setAttribute('aria-hidden', true);
+
         return;
       }
     }
 
-    element.classList.remove('u-hide');
-    element.setAttribute('aria-hidden', false);
+    radContentElement.classList.remove('u-hide');
+    radContentElement.setAttribute('aria-hidden', false);
   })
 }
