@@ -1,0 +1,9 @@
+@import 'vanilla-framework/scss/vanilla';
+@import 'vanilla-framework/scss/patterns_code-snippet';
+@import 'vanilla-framework/scss/utilities_hide';
+
+.discourse-rad-element {
+  @include vf-base;
+  @include vf-p-code-snippet;
+  @include vf-u-hide;
+}
