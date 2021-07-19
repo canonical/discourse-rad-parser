@@ -3,25 +3,31 @@ const radDropdownElementClassName = '.js-rad-dropdown-element';
 const radContentElementClassName = '.js-rad-content-element';
 
 export const DiscourseRADParser = () => {
-  const radTabsElements = document.querySelectorAll(`${radTabsElementClassName}`);
+  const radTabsElements = document.querySelectorAll(
+    `${radTabsElementClassName}`
+  );
 
   radTabsElements.forEach((radTabsElement) => {
-    const radDropdownElements = radTabsElement.querySelectorAll(`${radDropdownElementClassName}`);
+    const radDropdownElements = radTabsElement.querySelectorAll(
+      `${radDropdownElementClassName}`
+    );
 
     setDefaults(radDropdownElements);
     setupDropdowns(radDropdownElements);
   });
 
   toggleElements();
-}
+};
 
-const setDefaults = radDropdownElements => {
-  radDropdownElements.forEach(radDropdownElement => {
+const setDefaults = (radDropdownElements) => {
+  radDropdownElements.forEach((radDropdownElement) => {
     const name = radDropdownElement.name;
-    const radDropdownElementOptions = radDropdownElement.querySelectorAll('option');
+    const radDropdownElementOptions = radDropdownElement.querySelectorAll(
+      'option'
+    );
 
     let defaultWasSet = false;
-    radDropdownElementOptions.forEach(radDropdownElementOption => {
+    radDropdownElementOptions.forEach((radDropdownElementOption) => {
       if (localStorage.getItem(name) === radDropdownElementOption.value) {
         defaultWasSet = true;
         radDropdownElementOption.setAttribute('selected', 'selected');
@@ -32,39 +38,48 @@ const setDefaults = radDropdownElements => {
       localStorage.setItem(name, radDropdownElement.firstElementChild.value);
     }
   });
-}
+};
 
-const setupDropdowns = radDropdownElements => {
-  radDropdownElements.forEach(radDropdownElement => {
+const setupDropdowns = (radDropdownElements) => {
+  radDropdownElements.forEach((radDropdownElement) => {
     attachDropdownEvents(radDropdownElement);
   });
-}
+};
 
 const attachDropdownEvents = (radDropdownElement) => {
-  radDropdownElement.addEventListener('change', e => {
+  radDropdownElement.addEventListener('change', (e) => {
     const newValue = e.target.value;
     const dropdownName = radDropdownElement.name;
 
     localStorage.setItem(dropdownName, newValue);
 
-    const allRadDropdownElements = document.querySelectorAll(`${radDropdownElementClassName}`);
-    allRadDropdownElements.forEach(dropdown => {
-      if (dropdown.name === dropdownName && dropdown.innerHTML.indexOf('value="' + newValue + '"') > -1) {
+    const allRadDropdownElements = document.querySelectorAll(
+      `${radDropdownElementClassName}`
+    );
+    allRadDropdownElements.forEach((dropdown) => {
+      if (
+        dropdown.name === dropdownName &&
+        dropdown.innerHTML.indexOf('value="' + newValue + '"') > -1
+      ) {
         dropdown.value = newValue;
       }
     });
 
     toggleElements();
   });
-}
+};
 
 const toggleElements = () => {
-  const radContentElements = document.querySelectorAll(`${radContentElementClassName}`);
+  const radContentElements = document.querySelectorAll(
+    `${radContentElementClassName}`
+  );
 
-  radContentElements.forEach(radContentElement => {
+  radContentElements.forEach((radContentElement) => {
     for (const criteriaName in radContentElement.dataset) {
       const criteriaValue = localStorage.getItem(criteriaName);
-      const criteriaValuesList = radContentElement.dataset[criteriaName].split(',');
+      const criteriaValuesList = radContentElement.dataset[criteriaName].split(
+        ','
+      );
 
       if (!criteriaValuesList.includes(criteriaValue)) {
         radContentElement.classList.add('u-hide');
@@ -76,5 +91,5 @@ const toggleElements = () => {
 
     radContentElement.classList.remove('u-hide');
     radContentElement.setAttribute('aria-hidden', false);
-  })
-}
+  });
+};
