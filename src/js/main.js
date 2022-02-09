@@ -22,10 +22,14 @@ export const DiscourseRADParser = () => {
 };
 
 const initRad = () => {
-  const radTabsElements = document.querySelectorAll(`${radTabsElementClassName}`);
+  const radTabsElements = document.querySelectorAll(
+    `${radTabsElementClassName}`
+  );
 
   radTabsElements.forEach((radTabsElement) => {
-    const tabs = radTabsElement.querySelectorAll(`${radContentElementClassName}`);
+    const tabs = radTabsElement.querySelectorAll(
+      `${radContentElementClassName}`
+    );
     const header = document.createElement('div');
     header.classList.add('p-code-snippet__header');
     const dropdowns = document.createElement('div');
@@ -37,7 +41,7 @@ const initRad = () => {
     for (let i = 0; i < dropdownSettings.length; i++) {
       const dropdownName = dropdownSettings[i].name;
       const dropdown = document.createElement('select');
-      dropdown.setAttribute("name", dropdownName);
+      dropdown.setAttribute('name', dropdownName);
       const dropdownOptions = dropdownSettings[i].options;
 
       dropdown.classList.add(`js-rad-dropdown-element`);
@@ -61,13 +65,13 @@ const initRad = () => {
     }
     header.append(dropdowns);
 
-    tabs.forEach(function(option) {
+    tabs.forEach(function (option) {
       option.classList.add('p-code-snippet__block');
     });
 
     radTabsElement.prepend(header);
   });
-}
+};
 
 const getDropdownSettings = (tabs) => {
   let dropdownSettings = [];
@@ -96,13 +100,13 @@ const getDropdownSettings = (tabs) => {
     for (let i = 0; i < dropdownsOrder.length; i++) {
       dropdownSettings.unshift({
         name: dropdownsOrder[i],
-        options: attributesList[dropdownsOrder[i]]
+        options: attributesList[dropdownsOrder[i]],
       });
     }
   });
 
   return dropdownSettings;
-}
+};
 
 const setDefaults = (radDropdownElements) => {
   radDropdownElements.forEach((radDropdownElement) => {
