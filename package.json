@@ -51,6 +51,7 @@
     "build": "npm run clean && npm run test && npm run buildScss && npm run buildJs",
     "lint-js": "eslint src/js/**/*.js",
     "lint-scss": "stylelint src/sass/**/*.scss",
+    "lint": "yarn run lint-scss && yarn run lint-js",
     "prettier": "prettier -c 'src/**/*.{scss,js}'",
     "test": "yarn run lint-js && yarn run lint-scss && yarn run prettier",
     "format": "prettier -w 'src/**/*.{scss,js}'",
