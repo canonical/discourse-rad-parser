@@ -3,6 +3,8 @@ const radDropdownElementClassName = '.js-rad-dropdown-element';
 const radContentElementClassName = '.js-rad-content-element';
 
 export const DiscourseRADParser = () => {
+  initRad();
+
   const radTabsElements = document.querySelectorAll(
     `${radTabsElementClassName}`
   );
@@ -18,6 +20,89 @@ export const DiscourseRADParser = () => {
 
   toggleElements();
 };
+
+const initRad = () => {
+  const radTabsElements = document.querySelectorAll(`${radTabsElementClassName}`);
+
+  radTabsElements.forEach((radTabsElement) => {
+    const tabs = radTabsElement.querySelectorAll(`${radContentElementClassName}`);
+    const header = document.createElement('div');
+    header.classList.add('p-code-snippet__header');
+    const dropdowns = document.createElement('div');
+    dropdowns.classList.add('p-code-snippet__dropdowns');
+
+    radTabsElement.classList.add('p-code-snippet');
+
+    const dropdownSettings = getDropdownSettings(tabs);
+    for (let i = 0; i < dropdownSettings.length; i++) {
+      const dropdownName = dropdownSettings[i].name;
+      const dropdown = document.createElement('select');
+      dropdown.setAttribute("name", dropdownName);
+      const dropdownOptions = dropdownSettings[i].options;
+
+      dropdown.classList.add(`js-rad-dropdown-element`);
+      dropdown.classList.add('p-code-snippet__dropdown');
+
+      if (dropdownOptions.length === 0) {
+        continue;
+      }
+
+      for (let i = 0; i < dropdownOptions.length; i++) {
+        const optionValue = dropdownOptions[i];
+        const optionLabel = optionValue.replace('-', ' ');
+        const option = document.createElement('option');
+        option.value = optionValue;
+        option.innerHTML = optionLabel;
+
+        dropdown.append(option);
+      }
+
+      dropdowns.append(dropdown);
+    }
+    header.append(dropdowns);
+
+    tabs.forEach(function(option) {
+      option.classList.add('p-code-snippet__block');
+    });
+
+    radTabsElement.prepend(header);
+  });
+}
+
+const getDropdownSettings = (tabs) => {
+  let dropdownSettings = [];
+  let attributesList = [];
+
+  tabs.forEach((tab) => {
+    const attributes = tab.dataset;
+    let dropdownsOrder = [];
+
+    for (const attributeName in attributes) {
+      let attributeValue = tab.dataset[attributeName];
+
+      if (!(attributeName in attributesList)) {
+        dropdownsOrder.push(attributeName);
+        attributesList[attributeName] = [];
+      }
+
+      const splitValues = attributeValue.split(',');
+      for (let i = 0; i < splitValues.length; i++) {
+        if (attributesList[attributeName].indexOf(splitValues[i]) === -1) {
+          attributesList[attributeName].push(splitValues[i]);
+        }
+      }
+    }
+
+    for (let i = 0; i < dropdownsOrder.length; i++) {
+      dropdownSettings.unshift({
+        name: dropdownsOrder[i],
+        options: attributesList[dropdownsOrder[i]]
+      });
+    }
+  });
+
+  return dropdownSettings;
+}
 
 const setDefaults = (radDropdownElements) => {
   radDropdownElements.forEach((radDropdownElement) => {
