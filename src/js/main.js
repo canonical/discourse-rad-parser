@@ -142,19 +142,30 @@ const attachDropdownEvents = (radDropdownElement) => {
 
     localStorage.setItem(dropdownName, newValue);
 
-    const allRadDropdownElements = document.querySelectorAll(
-      `${radDropdownElementClassName}`
+    // Update only the dropdown that was changed
+    radDropdownElement.value = newValue;
+
+    // Update corresponding content elements
+    const radTabsElement = radDropdownElement.closest(radTabsElementClassName);
+    const radContentElements = radTabsElement.querySelectorAll(
+      radContentElementClassName
     );
-    allRadDropdownElements.forEach((dropdown) => {
-      if (
-        dropdown.name === dropdownName &&
-        dropdown.innerHTML.indexOf('value="' + newValue + '"') > -1
-      ) {
-        dropdown.value = newValue;
+
+    radContentElements.forEach((radContentElement) => {
+      const criteriaName = dropdownName;
+      const criteriaValue = localStorage.getItem(criteriaName);
+      const criteriaValuesList = radContentElement.dataset[criteriaName].split(
+        ','
+      );
+
+      if (!criteriaValuesList.includes(criteriaValue)) {
+        radContentElement.classList.add('u-hide');
+        radContentElement.setAttribute('aria-hidden', true);
+      } else {
+        radContentElement.classList.remove('u-hide');
+        radContentElement.setAttribute('aria-hidden', false);
       }
     });
-
-    toggleElements();
   });
 };
 
